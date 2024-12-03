@@ -315,12 +315,18 @@ bool UsbCdcIoChannel::isOpen ()
 
 boost::mutex readWriteMutex;
 
+#if BOOST_VERSION >= 107000
+#define GET_IO_SERVICE(s) ((boost::asio::io_context&)(s).get_executor().context())
+#else
+#define GET_IO_SERVICE(s) ((s).get_io_service())
+#endif
+
 class AsyncTransferHandler
 {
 public:	
 	AsyncTransferHandler(serial_port& port) : 
 		port(port), 
-		timer(port.get_io_service()), 
+		timer(GET_IO_SERVICE(port)), 
 		result(RES_NONE), 
 		bytesTransfered(0) {}
 
@@ -332,11 +338,11 @@ public:
 		async_read(port, buffer(buf, bufSize),
 				 boost::bind(&AsyncTransferHandler::onTransferComplete, this, _1, _2) );
 
-		port.get_io_service().reset();
+		GET_IO_SERVICE(port).reset();
 
 #if defined(_WIN32) || defined(_WIN64)
 		while ( result == RES_NONE )
-			port.get_io_service().run_one();
+			GET_IO_SERVICE(port).run_one();
 
 		if (result != RES_COMPLETE)
 		{
@@ -349,9 +355,9 @@ public:
 			timer.cancel();
 #else
 		while ( result == RES_NONE )
-			port.get_io_service().run();
+			GET_IO_SERVICE(port).run();
 #endif
-		port.get_io_service().stop();
+		GET_IO_SERVICE(port).stop();
 
 		return (result == RES_COMPLETE) ? static_cast<int>(bytesTransfered) : -1;
 	}	

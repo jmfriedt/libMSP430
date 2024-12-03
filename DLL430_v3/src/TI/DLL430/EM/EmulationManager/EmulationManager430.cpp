@@ -135,43 +135,43 @@ VariableWatchPtr EmulationManager430::getVariableWatch() const
 
 bool EmulationManager430::hasTriggerConditionManager() const 
 {
-	return mTriggerConditionManager;
+	return mTriggerConditionManager.get(); // JMF
 }
 
 
 bool EmulationManager430::hasBreakpointManager() const 
 {
-	return mBreakpointManager;
+	return mBreakpointManager.get(); // JMF
 }
 
 
 bool EmulationManager430::hasClockControl() const 
 {
-	return mClockControl;
+	return mClockControl.get(); // JMF
 }
 
 
 bool EmulationManager430::hasCycleCounter() const 
 {
-	return mCycleCounter;
+	return mCycleCounter.get(); // JMF
 }
 
 
 bool EmulationManager430::hasSequencer() const 
 {
-	return mSequencer;
+	return mSequencer.get(); // JMF
 }
 
 
 bool EmulationManager430::hasTrace() const 
 {
-	return mTrace;
+	return mTrace.get(); // JMF
 }
 
 
 bool EmulationManager430::hasVariableWatch() const 
 {
-	return mVariableWatch;
+	return mVariableWatch.get();
 }
 
 
